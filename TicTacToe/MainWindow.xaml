@@ -1,0 +1,124 @@
+﻿<Window x:Class="TicTacToe.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TicTacToe"
+        xmlns:enums="clr-namespace:TicTacToe.Enums"
+        xmlns:converters="clr-namespace:TicTacToe.Converters"
+        mc:Ignorable="d"
+        Title="Tic Tac Toe" Height="450" Width="800">
+    <Window.Resources>
+        <enums:PlayerType x:Key="HumanPlayerType">Human</enums:PlayerType>
+        <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
+        <Style TargetType="Button" x:Key="GameCell">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.1" Color="#FF7693B3" />
+                            <GradientStop Offset="0.3" Color="Black" />
+                            <GradientStop Offset="0.5" Color="#FF2B2B2B" />
+                            <GradientStop Offset="0.7" Color="Black" />
+                            <GradientStop Offset="1" Color="#FF7693B3" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                            <Grid>
+                                <TextBlock x:Name="ContentTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                           Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" 
+                                           FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" />
+                                <Border x:Name="HoverOverlay" Background="Transparent" Visibility="Collapsed" Opacity="0.3" />
+                                <Border x:Name="PlayerOverlay" Visibility="Collapsed" Opacity="0.3" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverOverlay" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="HoverOverlay" Property="Background" Value="AliceBlue">
+                                </Setter>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                                <Setter Property="Content" Value="{Binding CheckedByPlayer.Name}" />
+                                <Setter TargetName="ContentTextBlock" Property="Foreground" Value="White" />
+                                <Setter TargetName="ContentTextBlock" Property="FontWeight" Value="Bold" />
+                                <Setter TargetName="ContentTextBlock" Property="Background" Value="Black" />
+                                <Setter TargetName="ContentTextBlock" Property="Padding" Value="5" />
+                                <Setter TargetName="PlayerOverlay" Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CheckedByPlayer.PlayerType}" Value="{StaticResource HumanPlayerType}">
+                                    <Setter TargetName="PlayerOverlay" Property="Background" Value="Green" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CheckedByPlayer.PlayerType}" Value="{StaticResource ComputerPlayerType}">
+                                    <Setter TargetName="PlayerOverlay" Property="Background" Value="Red" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            
+            <Button Grid.Column="0" HorizontalAlignment="Left" Content="New Game" Command="{Binding NewGameCommand}" />
+            
+            <!--TODO - Move status messages to a viewmodel-->
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Text="Your turn!" Visibility="{Binding CurrentPlayerType, 
+                Converter={StaticResource EnumToVisibilityConverter}, 
+                ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="DarkOliveGreen" />
+            
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Text="You won!" Visibility="{Binding WinningPlayerType, 
+                Converter={StaticResource EnumToVisibilityConverter}, 
+                ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="DarkOliveGreen" />
+            
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Text="You lost!" Visibility="{Binding WinningPlayerType,
+                Converter={StaticResource EnumToVisibilityConverter},
+                ConverterParameter={StaticResource ComputerPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="DarkRed" />
+
+            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Text="Tie!" Visibility="{Binding IsTie, 
+                Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="20" Foreground="DarkRed" /> 
+
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                <TextBlock Text="Player" TextAlignment="Right"></TextBlock>
+                <TextBlock Text="Computer" TextAlignment="Right"></TextBlock>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding BoardCells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="{Binding RowCount}" Columns="{Binding ColumnCount}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource GameCell}" Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Grid>
+</Window>

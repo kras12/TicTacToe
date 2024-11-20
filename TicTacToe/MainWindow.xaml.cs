@@ -17,8 +17,14 @@ namespace TicTacToe
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double availableHeight = Math.Max(0, MainGrid.ActualHeight - TopPanel.ActualHeight - BoardBorder.BorderThickness.Top - BoardBorder.BorderThickness.Bottom);
-            double size = Math.Min(availableHeight, MainGrid.ActualWidth - BoardBorder.BorderThickness.Left - BoardBorder.BorderThickness.Right);
+            double verticalBoarderSpace = BoardBorder.BorderThickness.Top + BoardBorder.BorderThickness.Bottom
+                + BoardBorder.Padding.Top + BoardBorder.Padding.Bottom;
+
+            double horizontalBoarderSpace = BoardBorder.BorderThickness.Left + BoardBorder.BorderThickness.Right
+                + BoardBorder.Padding.Left + BoardBorder.Padding.Right;
+
+            double availableHeight = Math.Max(0, MainGrid.ActualHeight - TopPanel.ActualHeight - verticalBoarderSpace);
+            double size = Math.Min(availableHeight, MainGrid.ActualWidth - horizontalBoarderSpace);
             BoardGrid.Width = size;
             BoardGrid.Height = size;
         }

@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:TicTacToe"
         xmlns:enums="clr-namespace:TicTacToe.Enums"
         xmlns:converters="clr-namespace:TicTacToe.Converters"
+        xmlns:viewmodels="clr-namespace:TicTacToe.ViewModels"
         mc:Ignorable="d"
-        Title="Tic Tac Toe" Height="450" Width="800" MinWidth="380" MinHeight="460" SizeChanged="Window_SizeChanged">
+        Title="Tic Tac Toe" Height="450" Width="800" MinWidth="380" MinHeight="460" SizeChanged="Window_SizeChanged"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <enums:PlayerType x:Key="HumanPlayerType">Human</enums:PlayerType>
         <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
@@ -122,9 +124,9 @@
 
             <!-- Statistics -->
             <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,10,5">
-                <TextBlock Text="Wins" TextAlignment="Right"></TextBlock>
-                <TextBlock Text="Losses" TextAlignment="Right"></TextBlock>
-                <TextBlock Text="Ties" TextAlignment="Right"></TextBlock>
+                <TextBlock TextAlignment="Right" Text="{Binding GameStatistics.Wins, StringFormat=Wins: {0}}"></TextBlock>
+                <TextBlock TextAlignment="Right" Text="{Binding GameStatistics.Losses, StringFormat=Losses: {0}}"></TextBlock>
+                <TextBlock TextAlignment="Right" Text="{Binding GameStatistics.Ties, StringFormat=Ties: {0}}"></TextBlock>
             </StackPanel>
         </Grid>
 

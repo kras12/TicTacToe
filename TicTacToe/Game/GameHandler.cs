@@ -7,10 +7,11 @@ public class GameHandler : INotifyPropertyChanged
 {
     private GameBoard _board;
     private Player _computerPlayer = new Player(name: "Computer", playerType: PlayerType.Computer);
+    private GameStatistics _gameStatistics = new GameStatistics();
     private Player _humanPlayer = new Player(name: "Human", playerType: PlayerType.Human);
     private Player? currentPlayer;
-    private Player? winningPlayer;
     private bool isGameActive;
+    private Player? winningPlayer;
 
     public GameHandler(int numCellsPerDirection)
     {
@@ -53,6 +54,21 @@ public class GameHandler : INotifyPropertyChanged
         }
     }
 
+    public GameStatistics GameStatistics
+    {
+        get
+        {
+            return _gameStatistics;
+        }
+
+        private set
+        {
+            _gameStatistics = value;
+            _gameStatistics.PropertyChanged += GameStatistics_PropertyChanged;
+            OnPropertyChanged(nameof(GameStatistics));
+        }
+    }
+
     public bool HaveWinner => WinningPlayer != null;
 
     public bool IsGameActive
@@ -80,6 +96,7 @@ public class GameHandler : INotifyPropertyChanged
             return _board.RowCount;
         }
     }
+
     public Player? WinningPlayer
     {
         get
@@ -153,8 +170,27 @@ public class GameHandler : INotifyPropertyChanged
                 break;
         }
     }
+
+    private void GameStatistics_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(GameStatistics));
+    }
+
     private void EndGame(Player? winningPlayer = null)
     {
+        if (winningPlayer == null)
+        {
+            GameStatistics.RegisterTie();
+        }
+        else if (winningPlayer.PlayerType == PlayerType.Human)
+        {
+            GameStatistics.RegisterWin();
+        }
+        else if (winningPlayer.PlayerType == PlayerType.Computer)
+        {
+            GameStatistics.RegisterLoss();
+        }
+
         CurrentPlayer = null;
         WinningPlayer = winningPlayer;
         IsGameActive = false;        

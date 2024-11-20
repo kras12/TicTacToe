@@ -36,6 +36,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
             case nameof(GameHandler.IsGameActive):
                 OnPropertyChanged(nameof(StatusMessage));
                 break;
+
+            case nameof(GameHandler.GameStatistics):
+                OnPropertyChanged(nameof(GameStatistics));
+                break;
         }
     }
 
@@ -60,6 +64,14 @@ public class MainWindowViewModel : INotifyPropertyChanged
         get
         {
             return GameHandler.ColumnCount;
+        }
+    }
+
+    public GameStatistics GameStatistics
+    {
+        get
+        {
+            return GameHandler.GameStatistics;
         }
     }
 

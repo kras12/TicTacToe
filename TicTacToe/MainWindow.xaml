@@ -11,21 +11,26 @@
     <Window.Resources>
         <enums:PlayerType x:Key="HumanPlayerType">Human</enums:PlayerType>
         <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
-        <Style TargetType="Button" x:Key="GameCell">
+        <Style TargetType="Button" x:Key="BoardCell">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="1000"/>
+                </Style>
+            </Style.Resources>
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="BorderBrush" Value="#CC9C9C9C"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background">
                 <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <LinearGradientBrush.GradientStops>
-                            <GradientStop Offset="0.1" Color="#FF7693B3" />
-                            <GradientStop Offset="0.3" Color="Black" />
-                            <GradientStop Offset="0.5" Color="#FF2B2B2B" />
-                            <GradientStop Offset="0.7" Color="Black" />
-                            <GradientStop Offset="1" Color="#FF7693B3" />
-                        </LinearGradientBrush.GradientStops>
-                    </LinearGradientBrush>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#FFA2B7D2" Offset="0.0" />
+                        <GradientStop Color="#FF7B8BA0" Offset="0.2" />
+                        <GradientStop Color="#FF5F6C7C" Offset="0.4" />
+                        <GradientStop Color="#FF4D5A6A" Offset="0.6" />
+                        <GradientStop Color="#FF3B4858" Offset="0.8" />
+                        <GradientStop Color="#FF3B4858" Offset="0.98" />
+                        <GradientStop Color="AntiqueWhite" Offset="1.0" />
+                    </RadialGradientBrush>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -132,8 +137,9 @@
         </Grid>
         </Border>
         
+        <!--Game Board-->
         <Border Grid.Row="1" BorderBrush="#CC000000" BorderThickness="2">
-            <Grid>
+            <Grid Background="Black">
             <ItemsControl ItemsSource="{Binding BoardCells}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -142,7 +148,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Style="{StaticResource GameCell}" Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                            <Button Style="{StaticResource BoardCell}" Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

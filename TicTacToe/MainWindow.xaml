@@ -80,9 +80,14 @@
                 <Setter Property="Padding" Value="10,5,10,5"/>
             </Style.Setters>
         </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="AntiqueWhite" />
+        </Style>
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
+    
+    <!--Primary Grid-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -92,12 +97,12 @@
         <!--Top panel-->
         <Border Grid.Row="0" BorderBrush="Black" BorderThickness="0,0,0,0">
             <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                         <GradientStop Color="#FF3B4858" Offset="0.0" />
@@ -108,52 +113,52 @@
                     </LinearGradientBrush>
                 </Grid.Background>
 
-            <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
-                    Content="New Game" Command="{Binding NewGameCommand}" />
-            
-            <!--TODO - Move status messages to a viewmodel-->
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                       Text="Your turn!" Visibility="{Binding CurrentPlayerType, 
-                Converter={StaticResource EnumToVisibilityConverter}, 
-        ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="AntiqueWhite" />
-            
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Text="You won!" Visibility="{Binding WinningPlayerType, 
-                Converter={StaticResource EnumToVisibilityConverter}, 
-        ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="AntiqueWhite" />
-            
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Text="You lost!" Visibility="{Binding WinningPlayerType,
-                Converter={StaticResource EnumToVisibilityConverter},
-        ConverterParameter={StaticResource ComputerPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="AntiqueWhite" />
+                <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
+            Content="New Game" Command="{Binding NewGameCommand}" />
 
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Text="Tie!" Visibility="{Binding IsTie, 
-        Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="20" Foreground="AntiqueWhite" />
+                <!--TODO - Move status messages to a viewmodel-->
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+               Text="Your turn!" Visibility="{Binding CurrentPlayerType, 
+        Converter={StaticResource EnumToVisibilityConverter}, 
+        ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" />
 
-            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
-                    <TextBlock Text="Player" Foreground="AntiqueWhite" TextAlignment="Right"></TextBlock>
-                    <TextBlock Text="Computer" Foreground="AntiqueWhite" TextAlignment="Right"></TextBlock>
-            </StackPanel>
-        </Grid>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Text="You won!" Visibility="{Binding WinningPlayerType, 
+        Converter={StaticResource EnumToVisibilityConverter}, 
+        ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" />
+
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Text="You lost!" Visibility="{Binding WinningPlayerType,
+        Converter={StaticResource EnumToVisibilityConverter},
+        ConverterParameter={StaticResource ComputerPlayerType}, FallbackValue=Collapsed}" FontSize="20" />
+
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Text="Tie!" Visibility="{Binding IsTie, 
+        Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="20" />
+
+                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                    <TextBlock Text="Player" TextAlignment="Right"></TextBlock>
+                    <TextBlock Text="Computer" TextAlignment="Right"></TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
-        
+
         <!--Game Board-->
         <Border Grid.Row="1" BorderBrush="#CC000000" BorderThickness="2">
             <Grid Background="Black">
-            <ItemsControl ItemsSource="{Binding BoardCells}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="{Binding RowCount}" Columns="{Binding ColumnCount}" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                <ItemsControl ItemsSource="{Binding BoardCells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="{Binding RowCount}" Columns="{Binding ColumnCount}" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
                             <Button Style="{StaticResource BoardCell}" Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
         </Border>        
     </Grid>
 </Window>

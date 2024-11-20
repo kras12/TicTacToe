@@ -81,13 +81,25 @@
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" >
+        
+        <!--Top panel-->
+        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="0,0,0,0">
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.0" Color="#667693B3" />
+                            <GradientStop Offset="1" Color="#FF54687F"/>
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Grid.Background>
+
             <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
                     Content="New Game" Command="{Binding NewGameCommand}" />
             
@@ -116,8 +128,10 @@
                 <TextBlock Text="Computer" TextAlignment="Right"></TextBlock>
             </StackPanel>
         </Grid>
+        </Border>
         
-        <Grid Grid.Row="1">
+        <Border Grid.Row="1" BorderBrush="#CC000000" BorderThickness="2">
+            <Grid>
             <ItemsControl ItemsSource="{Binding BoardCells}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -131,5 +145,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
+        </Border>        
     </Grid>
 </Window>

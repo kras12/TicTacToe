@@ -7,7 +7,7 @@
         xmlns:enums="clr-namespace:TicTacToe.Enums"
         xmlns:converters="clr-namespace:TicTacToe.Converters"
         mc:Ignorable="d"
-        Title="Tic Tac Toe" Height="450" Width="800">
+        Title="Tic Tac Toe" Height="450" Width="800" SizeChanged="Window_SizeChanged">
     <Window.Resources>
         <enums:PlayerType x:Key="HumanPlayerType">Human</enums:PlayerType>
         <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
@@ -88,32 +88,31 @@
     </Window.Resources>
     
     <!--Primary Grid-->
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         
         <!--Top panel-->
-        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="0,0,0,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
+        <Grid x:Name="TopPanel">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
 
-                <Grid.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#FF3B4858" Offset="0.0" />
-                        <GradientStop Color="#FF4D5A6A" Offset="0.25" />
-                        <GradientStop Color="#FF5F6C7C" Offset="0.5" />
-                        <GradientStop Color="#FF4D5A6A" Offset="0.75" />
-                        <GradientStop Color="#FF3B4858" Offset="1.0" />
-                    </LinearGradientBrush>
-                </Grid.Background>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#FF3B4858" Offset="0.0" />
+                    <GradientStop Color="#FF4D5A6A" Offset="0.25" />
+                    <GradientStop Color="#FF5F6C7C" Offset="0.5" />
+                    <GradientStop Color="#FF4D5A6A" Offset="0.75" />
+                    <GradientStop Color="#FF3B4858" Offset="1.0" />
+                </LinearGradientBrush>
+            </Grid.Background>
 
-                <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
+            <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
             Content="New Game" Command="{Binding NewGameCommand}" />
 
                 <!--TODO - Move status messages to a viewmodel-->
@@ -141,11 +140,11 @@
                     <TextBlock Text="Computer" TextAlignment="Right"></TextBlock>
                 </StackPanel>
             </Grid>
-        </Border>
 
-        <!--Game Board-->
-        <Border Grid.Row="1" BorderBrush="#CC000000" BorderThickness="2">
-            <Grid Background="Black">
+            <!--Game Board-->
+        <Border x:Name="BoardBorder" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                BorderBrush="AntiqueWhite" BorderThickness="2" Background="Black">
+            <Grid x:Name="BoardGrid">
                 <ItemsControl ItemsSource="{Binding BoardCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

@@ -155,9 +155,9 @@ public class GameHandler : INotifyPropertyChanged
     }
     private void EndGame(Player? winningPlayer = null)
     {
-        IsGameActive = false;
         CurrentPlayer = null;
         WinningPlayer = winningPlayer;
+        IsGameActive = false;        
     }
 
     private GameBoardCell GetRandomCheckableCell()

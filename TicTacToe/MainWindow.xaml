@@ -99,11 +99,12 @@
             </Grid.ColumnDefinitions>
             
                 <Grid.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <LinearGradientBrush.GradientStops>
-                            <GradientStop Offset="0.0" Color="#667693B3" />
-                            <GradientStop Offset="1" Color="#FF54687F"/>
-                        </LinearGradientBrush.GradientStops>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FF3B4858" Offset="0.0" />
+                        <GradientStop Color="#FF4D5A6A" Offset="0.25" />
+                        <GradientStop Color="#FF5F6C7C" Offset="0.5" />
+                        <GradientStop Color="#FF4D5A6A" Offset="0.75" />
+                        <GradientStop Color="#FF3B4858" Offset="1.0" />
                     </LinearGradientBrush>
                 </Grid.Background>
 
@@ -114,25 +115,25 @@
             <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                        Text="Your turn!" Visibility="{Binding CurrentPlayerType, 
                 Converter={StaticResource EnumToVisibilityConverter}, 
-                ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="DarkOliveGreen" />
+        ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="AntiqueWhite" />
             
             <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Text="You won!" Visibility="{Binding WinningPlayerType, 
                 Converter={StaticResource EnumToVisibilityConverter}, 
-                ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="DarkOliveGreen" />
+        ConverterParameter={StaticResource HumanPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="AntiqueWhite" />
             
             <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Text="You lost!" Visibility="{Binding WinningPlayerType,
                 Converter={StaticResource EnumToVisibilityConverter},
-                ConverterParameter={StaticResource ComputerPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="DarkRed" />
+        ConverterParameter={StaticResource ComputerPlayerType}, FallbackValue=Collapsed}" FontSize="20" Foreground="AntiqueWhite" />
 
             <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                 Text="Tie!" Visibility="{Binding IsTie, 
-                Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="20" Foreground="DarkRed" /> 
+        Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="20" Foreground="AntiqueWhite" />
 
             <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
-                <TextBlock Text="Player" TextAlignment="Right"></TextBlock>
-                <TextBlock Text="Computer" TextAlignment="Right"></TextBlock>
+                    <TextBlock Text="Player" Foreground="AntiqueWhite" TextAlignment="Right"></TextBlock>
+                    <TextBlock Text="Computer" Foreground="AntiqueWhite" TextAlignment="Right"></TextBlock>
             </StackPanel>
         </Grid>
         </Border>

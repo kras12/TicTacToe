@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Xml;
 using TicTacToe.Commands;
 using TicTacToe.Enums;
 using TicTacToe.Game;
 
 namespace TicTacToe.ViewModels;
-
-// TODO
-// Move status messages to view model
-// Fix tie state
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
@@ -24,14 +21,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         switch (e.PropertyName)
         {
-            case nameof(GameHandler.CurrentPlayer):
-                OnPropertyChanged(nameof(CurrentPlayerType));
-                break;
-
-            case nameof(GameHandler.WinningPlayer):
-                OnPropertyChanged(nameof(WinningPlayerType));
-                break;
-
             case nameof(GameHandler.BoardCells):
                 OnPropertyChanged(nameof(BoardCells));
                 break;
@@ -44,8 +33,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
                 OnPropertyChanged(nameof(RowCount));
                 break;
 
-            case nameof(GameHandler.IsTie):
-                OnPropertyChanged(nameof(IsTie));
+            case nameof(GameHandler.IsGameActive):
+                OnPropertyChanged(nameof(StatusMessage));
                 break;
         }
     }
@@ -56,31 +45,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public GameHandler GameHandler { get; }
 
-    public bool IsTie
-    {
-        get
-        {
-            return GameHandler.IsTie;
-        }
-    }
-
     public RelayCommand NewGameCommand { get; }
-    
-    public PlayerType? CurrentPlayerType
-    {
-        get
-        {
-            return GameHandler.CurrentPlayer?.PlayerType;
-        }
-    }
-
-    public PlayerType? WinningPlayerType
-    {
-        get
-        {
-            return GameHandler.WinningPlayer?.PlayerType;
-        }
-    }
 
     public List<GameBoardCell> BoardCells
     {
@@ -103,6 +68,34 @@ public class MainWindowViewModel : INotifyPropertyChanged
         get
         {
             return GameHandler.RowCount;
+        }
+    }
+
+    public string StatusMessage
+    {
+        get
+        {
+            if (GameHandler.IsGameActive && GameHandler.CurrentPlayer?.PlayerType == PlayerType.Human)
+            {
+                return "Your turn!";
+            }
+            else if (!GameHandler.IsGameActive)
+            {
+                if (GameHandler.IsTie)
+                {
+                    return "Tie!";
+                }
+                else if (GameHandler.WinningPlayer?.PlayerType == PlayerType.Human)
+                {
+                    return "You won!";
+                }
+                else if (GameHandler.WinningPlayer?.PlayerType == PlayerType.Computer)
+                {
+                    return "You lost!";
+                }
+            }
+
+            return "";
         }
     }
 

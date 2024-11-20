@@ -5,6 +5,7 @@ using System.Windows.Data;
 
 namespace TicTacToe.Converters;
 
+// TODO - This converter will likely not be used now.
 public class EnumToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

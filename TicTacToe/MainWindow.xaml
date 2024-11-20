@@ -90,7 +90,7 @@
     <!--Primary Grid-->
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         
@@ -121,11 +121,12 @@
                        Text="{Binding StatusMessage}"/>
 
             <!-- Statistics -->
-            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
-                    <TextBlock Text="Player" TextAlignment="Right"></TextBlock>
-                    <TextBlock Text="Computer" TextAlignment="Right"></TextBlock>
-                </StackPanel>
-            </Grid>
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,10,5">
+                <TextBlock Text="Wins" TextAlignment="Right"></TextBlock>
+                <TextBlock Text="Losses" TextAlignment="Right"></TextBlock>
+                <TextBlock Text="Ties" TextAlignment="Right"></TextBlock>
+            </StackPanel>
+        </Grid>
 
         <!--Game Board-->
         <Border x:Name="BoardBorder" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

@@ -7,7 +7,7 @@
         xmlns:enums="clr-namespace:TicTacToe.Enums"
         xmlns:converters="clr-namespace:TicTacToe.Converters"
         mc:Ignorable="d"
-        Title="Tic Tac Toe" Height="450" Width="800" SizeChanged="Window_SizeChanged">
+        Title="Tic Tac Toe" Height="450" Width="800" MinWidth="380" MinHeight="460" SizeChanged="Window_SizeChanged">
     <Window.Resources>
         <enums:PlayerType x:Key="HumanPlayerType">Human</enums:PlayerType>
         <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
@@ -141,7 +141,7 @@
                 </StackPanel>
             </Grid>
 
-            <!--Game Board-->
+        <!--Game Board-->
         <Border x:Name="BoardBorder" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 BorderBrush="AntiqueWhite" BorderThickness="2" Background="Black" Padding="5">
             <Grid x:Name="BoardGrid">

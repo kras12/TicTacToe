@@ -63,6 +63,16 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Button" x:Key="GameControlButton">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Style.Resources>
+            <Style.Setters>
+                <Setter Property="Padding" Value="10,5,10,5"/>
+            </Style.Setters>
+        </Style>
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
@@ -78,7 +88,8 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             
-            <Button Grid.Column="0" HorizontalAlignment="Left" Content="New Game" Command="{Binding NewGameCommand}" />
+            <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
+                    Content="New Game" Command="{Binding NewGameCommand}" />
             
             <!--TODO - Move status messages to a viewmodel-->
             <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"

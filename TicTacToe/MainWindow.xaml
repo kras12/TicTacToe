@@ -11,8 +11,25 @@
         Title="Tic Tac Toe" Height="450" Width="800" MinWidth="380" MinHeight="460" SizeChanged="Window_SizeChanged"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
+        <!-- Enums -->
         <enums:PlayerType x:Key="HumanPlayerType">Human</enums:PlayerType>
         <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
+
+        <!-- Brushes -->
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="DarkGray"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+
+        <!-- Converters -->
+        <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <!-- Styles -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="AntiqueWhite" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="AntiqueWhite" />
+        </Style>
         <Style TargetType="Button" x:Key="BoardCell">
             <Style.Resources>
                 <Style TargetType="Border">
@@ -79,15 +96,26 @@
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Style.Resources>
-            <Style.Setters>
-                <Setter Property="Padding" Value="10,5,10,5"/>
-            </Style.Setters>
+            <Setter Property="Padding" Value="10,5,10,5"/>
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" 
+                                CornerRadius="5" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Button.MouseOver.Background}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource Button.MouseOver.Border}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="AntiqueWhite" />
-        </Style>
-        <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     
     <!--Primary Grid-->
@@ -103,8 +131,7 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-
+            </Grid.ColumnDefinitions>            
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                     <GradientStop Color="#FF3B4858" Offset="0.0" />
@@ -114,17 +141,29 @@
                     <GradientStop Color="#FF3B4858" Offset="1.0" />
                 </LinearGradientBrush>
             </Grid.Background>
-
+            
              <!-- Game actions -->
-            <Button Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource GameControlButton}"
-            Content="New Game" Command="{Binding NewGameCommand}" />
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,10,0,15">
+                    <Label Content="Difficulty:" Foreground="AntiqueWhite"/>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Width="80">
+                        <ComboBoxItem Content="Normal" IsSelected="True"></ComboBoxItem>
+                        <ComboBoxItem Content="Hard"></ComboBoxItem>
+                        <ComboBoxItem Content="Nightmare"></ComboBoxItem>
+                    </ComboBox>
+                    <Button Margin="0,10,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                        Style="{StaticResource GameControlButton}" Content="New Game" Command="{Binding NewGameCommand}"/>
+                </StackPanel>
+            </StackPanel>
 
             <!-- Status messages -->
-            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                       Text="{Binding StatusMessage}"/>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                <TextBlock Text="{Binding StatusMessage}" FontSize="30"/>
+            </StackPanel>
 
             <!-- Statistics -->
-            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,10,5">
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,10,10,10">
+                <Label Content="Difficulty: Normal"/>
                 <TextBlock TextAlignment="Right" Text="{Binding GameStatistics.Wins, StringFormat=Wins: {0}}"></TextBlock>
                 <TextBlock TextAlignment="Right" Text="{Binding GameStatistics.Losses, StringFormat=Losses: {0}}"></TextBlock>
                 <TextBlock TextAlignment="Right" Text="{Binding GameStatistics.Ties, StringFormat=Ties: {0}}"></TextBlock>

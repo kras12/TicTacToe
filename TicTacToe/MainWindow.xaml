@@ -40,9 +40,11 @@
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                             <Grid>
+                                <TextBlock x:Name="MarkTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                          FontSize="60" Foreground="White" Opacity="0.3"/>
                                 <TextBlock x:Name="ContentTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                           Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" 
-                                           FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" />
+                                           Text="{TemplateBinding Content}" Foreground="White"  
+                                           FontSize="12" FontWeight="Bold" Padding="5" />
                                 <Border x:Name="HoverOverlay" Background="Transparent" Visibility="Collapsed" Opacity="0.3" />
                                 <Border x:Name="PlayerOverlay" Visibility="Collapsed" Opacity="0.3" />
                             </Grid>
@@ -54,18 +56,17 @@
                                 </Setter>
                             </Trigger>
                             <DataTrigger Binding="{Binding IsChecked}" Value="True">
-                                <Setter Property="Content" Value="{Binding CheckedByPlayer.Name}" />
-                                <Setter TargetName="ContentTextBlock" Property="Foreground" Value="White" />
-                                <Setter TargetName="ContentTextBlock" Property="FontWeight" Value="Bold" />
-                                <Setter TargetName="ContentTextBlock" Property="Background" Value="Black" />
-                                <Setter TargetName="ContentTextBlock" Property="Padding" Value="5" />
+                                <Setter Property="Content" Value="{Binding CheckedByPlayer.Name}" />                                
+                                <Setter TargetName="ContentTextBlock" Property="Background" Value="#99000000" />
                                 <Setter TargetName="PlayerOverlay" Property="Visibility" Value="Visible" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding CheckedByPlayer.PlayerType}" Value="{StaticResource HumanPlayerType}">
-                                    <Setter TargetName="PlayerOverlay" Property="Background" Value="Green" />
+                                <Setter TargetName="PlayerOverlay" Property="Background" Value="Green" />
+                                <Setter TargetName="MarkTextBlock" Property="Text" Value="X"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding CheckedByPlayer.PlayerType}" Value="{StaticResource ComputerPlayerType}">
-                                    <Setter TargetName="PlayerOverlay" Property="Background" Value="Red" />
+                                <Setter TargetName="PlayerOverlay" Property="Background" Value="Red" />
+                                <Setter TargetName="MarkTextBlock" Property="Text" Value="O"/>
                             </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

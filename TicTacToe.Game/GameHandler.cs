@@ -12,12 +12,12 @@ public class GameHandler : INotifyPropertyChanged
     private Player? currentPlayer;
     private bool isGameActive;
     private Player? winningPlayer;
+    private int _currentGame = 0;
 
     public GameHandler(int numCellsPerDirection)
     {
         _board = new GameBoard(numCellsPerDirection);
         _board.PropertyChanged += _board_PropertyChanged;
-        NewGame();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -87,7 +87,7 @@ public class GameHandler : INotifyPropertyChanged
         }
     }
 
-    public bool IsTie => !IsGameActive && !HaveWinner;
+    public bool IsTie => !IsGameActive && _currentGame > 0 && !HaveWinner;
 
     public int RowCount
     {
@@ -124,6 +124,7 @@ public class GameHandler : INotifyPropertyChanged
         CurrentPlayer = _humanPlayer;
         WinningPlayer = null;
         IsGameActive = true;
+        _currentGame += 1;
     }
 
     public void PerformHumanPlayerMove(GameBoardCell cell)

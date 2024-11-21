@@ -71,6 +71,16 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         get
         {
+            if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
+            {
+                var designData = new GameStatistics();
+                designData.RegisterWin();
+                designData.RegisterWin();
+                designData.RegisterLoss();
+                designData.RegisterTie();
+                return designData;
+            }
+
             return GameHandler.GameStatistics;
         }
     }

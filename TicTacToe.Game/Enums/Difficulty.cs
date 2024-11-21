@@ -3,7 +3,6 @@
     public enum Difficulty
     {
         Normal,
-        Hard,
-        Nightmare
+        Hard
     }
 }

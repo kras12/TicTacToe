@@ -9,15 +9,15 @@ public class GameHandler : INotifyPropertyChanged
 
     private GameBoard _board;
     private Player _computerPlayer = new Player(name: "Computer", playerType: PlayerType.Computer);
+    private int _currentGame = 0;
     private GameStatistics _gameStatistics = new GameStatistics();
     private Player _humanPlayer = new Player(name: "Human", playerType: PlayerType.Human);
     private Player? currentPlayer;
+    private Difficulty difficulty;
     private bool isGameActive;
     private Player? winningPlayer;
-    private int _currentGame = 0;
-    private Difficulty difficulty;
 
-    public GameHandler(int numCellsPerDirection)
+    public GameHandler()
     {
         _board = new GameBoard(NumCellsPerDirection);
         _board.PropertyChanged += _board_PropertyChanged;
@@ -190,11 +190,6 @@ public class GameHandler : INotifyPropertyChanged
         }
     }
 
-    private void GameStatistics_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        OnPropertyChanged(nameof(GameStatistics));
-    }
-
     private void EndGame(Player? winningPlayer = null)
     {
         if (winningPlayer == null)
@@ -212,7 +207,33 @@ public class GameHandler : INotifyPropertyChanged
 
         CurrentPlayer = null;
         WinningPlayer = winningPlayer;
-        IsGameActive = false;        
+        IsGameActive = false;
+    }
+
+    private void GameStatistics_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(GameStatistics));
+    }
+    private GameBoardCell GetBestComputerMove()
+    {
+        int bestValue = int.MinValue;
+        GameBoardCell? bestCell = null;
+
+        foreach (var cell in _board.GetUncheckedCells())
+        {
+            _board.CheckCell(cell, _computerPlayer);
+            int score = Minimax(_board, 0, isComputer: false);
+            _board.UncheckCell(cell);
+
+            if (score > bestValue)
+            {
+                bestValue = score;
+                bestCell = cell;
+            }
+        }
+
+        return bestCell ??
+            throw new InvalidOperationException("Failed to find the best move");
     }
 
     private GameBoardCell GetRandomCheckableCell()
@@ -226,6 +247,56 @@ public class GameHandler : INotifyPropertyChanged
 
         Random random = new Random();
         return candidateCells[random.Next(0, candidateCells.Count)];
+    }
+
+    private int Minimax(GameBoard board, int depth, bool isComputer)
+    {
+        if (board.TryGetWinner(out var winningPlayer))
+        {
+            if (winningPlayer.PlayerType == PlayerType.Computer)
+            {
+                return 10 - depth;
+            }
+            else if (winningPlayer.PlayerType == PlayerType.Human)
+            {
+                return depth - 10;
+            }
+
+            throw new InvalidOperationException("Invalid player type");
+        }
+        else if (board.IsAllCellsChecked())
+        {
+            return 0;
+        }
+
+        if (isComputer)
+        {
+            int maximizedValue = int.MinValue;
+
+            foreach (var cell in board.GetUncheckedCells())
+            {
+                board.CheckCell(cell, _computerPlayer);
+                int score = Minimax(board, depth + 1, isComputer: false);
+                board.UncheckCell(cell);
+                maximizedValue = Math.Max(score, maximizedValue);
+            }
+
+            return maximizedValue;
+        }
+        else
+        {
+            int minimizedValue = int.MaxValue;
+
+            foreach (var cell in board.GetUncheckedCells())
+            {
+                board.CheckCell(cell, _humanPlayer);
+                int score = Minimax(board, depth + 1, isComputer: true);
+                board.UncheckCell(cell);
+                minimizedValue = Math.Min(score, minimizedValue);
+            }
+
+            return minimizedValue;
+        }
     }
 
     private void NextPlayer()
@@ -247,19 +318,35 @@ public class GameHandler : INotifyPropertyChanged
 
     private void PerformComputerMove()
     {
+        #region Checks
+        
+        ThrowIfNoActiveGame();
+
         if (CurrentPlayer == null)
         {
             throw new InvalidOperationException("Current player can't be null.");
         }
-
-        ThrowIfNoActiveGame();
 
         if (CurrentPlayer.PlayerType != PlayerType.Computer)
         {
             throw new InvalidOperationException("The current player is not a computer");
         }
 
-        _board.CheckCell(GetRandomCheckableCell(), _computerPlayer);
+        #endregion
+
+        switch (Difficulty)
+        {
+            case Difficulty.Normal:
+                PerformNormalComputerMove();
+                break;
+
+            case Difficulty.Hard:
+                PerformInsaneComputerMove();
+                break;
+
+            default:
+                throw new NotSupportedException($"The difficulty type '{Difficulty}' is not supported.");
+        }
 
         if (_board.TryGetWinner(out var winningPlayer))
         {
@@ -268,6 +355,16 @@ public class GameHandler : INotifyPropertyChanged
         }
 
         NextPlayer();
+    }
+
+    private void PerformInsaneComputerMove()
+    {
+        _board.CheckCell(GetBestComputerMove(), _computerPlayer);
+    }
+
+    private void PerformNormalComputerMove()
+    {
+        _board.CheckCell(GetRandomCheckableCell(), _computerPlayer);
     }
 
     private void ThrowIfNoActiveGame()

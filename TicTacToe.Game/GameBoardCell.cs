@@ -44,6 +44,11 @@ public class GameBoardCell : INotifyPropertyChanged
         CheckedByPlayer = player;
     }
 
+    public void RemoveCheck()
+    {
+        CheckedByPlayer = null;
+    }
+
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 

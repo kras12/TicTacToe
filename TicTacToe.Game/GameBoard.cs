@@ -95,6 +95,11 @@ public class GameBoard : INotifyPropertyChanged
         return player != null;
     }
 
+    public void UncheckCell(GameBoardCell cell)
+    {
+        Cells[cell.RowIndex][cell.ColumnIndex].RemoveCheck();
+    }
+
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

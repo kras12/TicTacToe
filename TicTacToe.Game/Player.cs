@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using TicTacToe.Enums;
+﻿using TicTacToe.Game.Enums;
 
 namespace TicTacToe.Game;
 

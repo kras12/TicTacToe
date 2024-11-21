@@ -1,4 +1,4 @@
-﻿namespace TicTacToe.Enums;
+﻿namespace TicTacToe.Game.Enums;
 
 public enum PlayerType
 {

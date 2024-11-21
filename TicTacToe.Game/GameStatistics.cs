@@ -52,18 +52,18 @@ namespace TicTacToe.Game
             }
         }
 
-        // TODO - Move all the game classes to a new project to safe guard these methods. 
-        internal void RegisterLoss()
+        // TODO - Make internal?
+        public void RegisterLoss()
         {
             Losses += 1;
         }
 
-        internal void RegisterTie()
+        public void RegisterTie()
         {
             Ties += 1;
         }
 
-        internal void RegisterWin()
+        public void RegisterWin()
         {
             Wins += 1;
         }

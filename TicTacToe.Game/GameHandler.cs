@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using TicTacToe.Enums;
+using TicTacToe.Game.Enums;
 
 namespace TicTacToe.Game;
 

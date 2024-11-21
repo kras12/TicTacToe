@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Xml;
 using TicTacToe.Commands;
-using TicTacToe.Enums;
+using TicTacToe.Game.Enums;
 using TicTacToe.Game;
 
 namespace TicTacToe.ViewModels;

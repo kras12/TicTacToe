@@ -5,6 +5,8 @@ namespace TicTacToe.Game;
 
 public class GameHandler : INotifyPropertyChanged
 {
+    private const int NumCellsPerDirection = 3;
+
     private GameBoard _board;
     private Player _computerPlayer = new Player(name: "Computer", playerType: PlayerType.Computer);
     private GameStatistics _gameStatistics = new GameStatistics();
@@ -17,7 +19,7 @@ public class GameHandler : INotifyPropertyChanged
 
     public GameHandler(int numCellsPerDirection)
     {
-        _board = new GameBoard(numCellsPerDirection);
+        _board = new GameBoard(NumCellsPerDirection);
         _board.PropertyChanged += _board_PropertyChanged;
     }
 

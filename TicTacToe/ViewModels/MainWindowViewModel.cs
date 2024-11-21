@@ -14,7 +14,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         CellClickCommand = new GenericRelayCommand<GameBoardCell>(OnCellClick, CanExecuteCellCLick);
         NewGameCommand = new RelayCommand(OnNewGame, CanCreateNewGame);
         
-        GameHandler = new GameHandler(numCellsPerDirection: 3);
+        GameHandler = new GameHandler();
         GameHandler.PropertyChanged += GameHandler_PropertyChanged;
 
         Difficulties = Enum.GetValues<Difficulty>().ToList();

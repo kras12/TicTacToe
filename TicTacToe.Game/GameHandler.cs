@@ -13,6 +13,7 @@ public class GameHandler : INotifyPropertyChanged
     private bool isGameActive;
     private Player? winningPlayer;
     private int _currentGame = 0;
+    private Difficulty difficulty;
 
     public GameHandler(int numCellsPerDirection)
     {
@@ -51,6 +52,20 @@ public class GameHandler : INotifyPropertyChanged
         {
             currentPlayer = value;
             OnPropertyChanged(nameof(CurrentPlayer));
+        }
+    }
+
+    public Difficulty Difficulty
+    {
+        get
+        {
+            return difficulty;
+        }
+
+        private set
+        {
+            difficulty = value;
+            OnPropertyChanged(nameof(Difficulty));
         }
     }
 
@@ -118,13 +133,14 @@ public class GameHandler : INotifyPropertyChanged
         return IsGameActive && !cell.IsChecked;
     }
 
-    public void NewGame()
+    public void NewGame(Difficulty difficulty)
     {
         _board.ResetBoard();
         CurrentPlayer = _humanPlayer;
         WinningPlayer = null;
-        IsGameActive = true;
         _currentGame += 1;
+        Difficulty = difficulty;
+        IsGameActive = true;
     }
 
     public void PerformHumanPlayerMove(GameBoardCell cell)

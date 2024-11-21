@@ -7,13 +7,18 @@ namespace TicTacToe.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
+    private Difficulty? _selectedDifficulty;
+
     public MainWindowViewModel()
     {
         CellClickCommand = new GenericRelayCommand<GameBoardCell>(OnCellClick, CanExecuteCellCLick);
         NewGameCommand = new RelayCommand(OnNewGame, CanCreateNewGame);
+        
         GameHandler = new GameHandler(numCellsPerDirection: 3);
-
         GameHandler.PropertyChanged += GameHandler_PropertyChanged;
+
+        Difficulties = Enum.GetValues<Difficulty>().ToList();
+        SelectedDifficulty = Difficulties.FirstOrDefault();
     }
 
     private void GameHandler_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -34,10 +39,15 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
             case nameof(GameHandler.IsGameActive):
                 OnPropertyChanged(nameof(StatusMessage));
+                OnPropertyChanged(nameof(IsGameActive));
                 break;
 
             case nameof(GameHandler.GameStatistics):
                 OnPropertyChanged(nameof(GameStatistics));
+                break;
+
+            case nameof(GameHandler.Difficulty):
+                OnPropertyChanged(nameof(CurrentDifficulty));
                 break;
         }
     }
@@ -45,6 +55,27 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public GenericRelayCommand<GameBoardCell> CellClickCommand { get; }
+
+    public List<Difficulty> Difficulties { get; private init; }
+
+    public Difficulty? CurrentDifficulty => GameHandler.Difficulty;
+
+    public bool IsGameActive => GameHandler.IsGameActive;
+
+
+    public Difficulty? SelectedDifficulty
+    {
+        get
+        {
+            return _selectedDifficulty;
+        }
+
+        set
+        {
+            _selectedDifficulty = value;
+            OnPropertyChanged(nameof(SelectedDifficulty));
+        }
+    }
 
     public GameHandler GameHandler { get; }
 
@@ -137,7 +168,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private void OnNewGame()
     {
-        GameHandler.NewGame();
+        if (SelectedDifficulty != null)
+        {
+            GameHandler.NewGame(SelectedDifficulty.Value);
+        }
     }
 
     protected void OnPropertyChanged(string propertyName)

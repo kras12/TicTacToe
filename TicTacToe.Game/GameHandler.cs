@@ -140,11 +140,11 @@ public class GameHandler : INotifyPropertyChanged
             _winningPlayer = value;
             OnPropertyChanged(nameof(WinningPlayer));
             OnPropertyChanged(nameof(HaveWinner));
-            OnPropertyChanged(nameof(IsTie));
+            OnPropertyChanged(nameof(IsTie));   
         }
     }
 
-    private public GameBoard Board
+    private GameBoard Board
     {
         get
         {

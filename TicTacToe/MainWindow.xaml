@@ -22,8 +22,9 @@
         <!-- Converters -->
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
-        <converters:InverseBooleanToVisibilityHiddenConverter x:Key="InverseBooleanToVisibilityHiddenConverter" />
+        <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter"/>
+        <converters:InverseBooleanToVisibilityHiddenConverter x:Key="InverseBooleanToVisibilityHiddenConverter"/>
+        <converters:HeightToFontSizeConverter x:Key="HeightToFontSizeConverter"/>
 
         <!-- Styles -->
         <Style TargetType="TextBlock">
@@ -60,10 +61,10 @@
                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                             <Grid>
                                 <TextBlock x:Name="MarkTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                          FontSize="60" Foreground="White" Opacity="0.3"/>
+                                    FontSize="60" Foreground="White" Opacity="0.3"/>
                                 <TextBlock x:Name="ContentTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                           Text="{TemplateBinding Content}" Foreground="White"  
-                                           FontSize="12" FontWeight="Bold" Padding="5" />
+                                    Text="{TemplateBinding Content}" Foreground="White" FontWeight="Bold" Padding="5"
+                                    FontSize="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Button}, Converter={StaticResource HeightToFontSizeConverter}, ConverterParameter=0.15}"/>
                                 <Border x:Name="HoverOverlay" Background="Transparent" Visibility="Collapsed" Opacity="0.3" />
                                 <Border x:Name="PlayerOverlay" Visibility="Collapsed" Opacity="0.3" />
                             </Grid>

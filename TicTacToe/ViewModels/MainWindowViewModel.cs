@@ -102,7 +102,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
 
         private set
-    {
+        {
             hasStartedGames = value;
             OnPropertyChanged(nameof(HasStartedGames));
         }
@@ -172,7 +172,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private async void OnCellClick(GameBoardCell cell)
     {
-        GameHandler.PerformHumanPlayerMove(cell);
+        await GameHandler.PerformHumanPlayerMove(cell);
     }
 
     private void OnNewGame()

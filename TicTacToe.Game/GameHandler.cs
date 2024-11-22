@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel;
+using System.Diagnostics;
 using TicTacToe.Game.Enums;
 
 namespace TicTacToe.Game;
@@ -149,7 +151,7 @@ public class GameHandler : INotifyPropertyChanged
         IsGameActive = true;
     }
 
-    public void PerformHumanPlayerMove(GameBoardCell cell)
+    public async Task PerformHumanPlayerMove(GameBoardCell cell)
     {
         ThrowIfNoActiveGame();
 
@@ -167,7 +169,7 @@ public class GameHandler : INotifyPropertyChanged
         }
 
         NextPlayer();
-        PerformComputerMove();
+        await PerformComputerMove();
     }
 
     protected void OnPropertyChanged(string propertyName)
@@ -218,23 +220,54 @@ public class GameHandler : INotifyPropertyChanged
     {
         OnPropertyChanged(nameof(GameStatistics));
     }
-    private GameBoardCell GetBestComputerMove()
+    
+    // TODO - REmove logging
+    private async Task<GameBoardCell> GetBestComputerMove()
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
         int bestValue = int.MinValue;
         GameBoardCell? bestCell = null;
 
+        SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        ConcurrentBag<GameBoardCell> cells = [];
+        List<Task> tasks = [];
+
         foreach (var cell in _board.GetUncheckedCells())
         {
-            _board.CheckCell(cell, _computerPlayer);
-            int score = Minimax(_board, 0, isComputer: false);
-            _board.UncheckCell(cell);
-
-            if (score > bestValue)
-            {
-                bestValue = score;
-                bestCell = cell;
-            }
+            cells.Add(cell);            
         }
+
+        int numberOfThreads = Math.Min(Environment.ProcessorCount, cells.Count);
+
+        for (int i = 0; i < numberOfThreads; i++)
+        {
+            tasks.Add(Task.Run(async () =>
+            {
+                while (cells.TryTake(out var originalCell))
+                {
+                    var boardCopy = _board.CreateCopy();
+                    var cell = boardCopy.Cells.SelectMany(x => x).Single(x => x.RowIndex == originalCell.RowIndex && x.ColumnIndex == originalCell.ColumnIndex);
+                    boardCopy.CheckCell(cell, _computerPlayer);
+                    int score = Minimax(boardCopy, 0, isComputer: false);
+
+                    Debug.WriteLine($"New way - Cell: {originalCell.RowIndex},{originalCell.ColumnIndex} - {score}");
+
+                    await semaphore.WaitAsync();
+                    if (score > bestValue)
+                    {
+                        bestValue = score;
+                        bestCell = _board.Cells.SelectMany(x => x).Single(x => x.RowIndex == cell.RowIndex && x.ColumnIndex == cell.ColumnIndex);
+                    }
+                    semaphore.Release();
+                }
+
+                Debug.WriteLine("Stopping task");
+            }));
+        }
+
+        await Task.WhenAll(tasks);
+
+        Debug.WriteLine($"New way - Time: {stopwatch.ElapsedMilliseconds} ms");
 
         return bestCell ??
             throw new InvalidOperationException("Failed to find the best move");
@@ -320,7 +353,7 @@ public class GameHandler : INotifyPropertyChanged
         }
     }
 
-    private void PerformComputerMove()
+    private async Task PerformComputerMove()
     {
         #region Checks
         
@@ -345,7 +378,7 @@ public class GameHandler : INotifyPropertyChanged
                 break;
 
             case Difficulty.Hard:
-                PerformInsaneComputerMove();
+                await PerformInsaneComputerMove();
                 break;
 
             default:
@@ -361,9 +394,9 @@ public class GameHandler : INotifyPropertyChanged
         NextPlayer();
     }
 
-    private void PerformInsaneComputerMove()
+    private async Task PerformInsaneComputerMove()
     {
-        _board.CheckCell(GetBestComputerMove(), _computerPlayer);
+        _board.CheckCell(await GetBestComputerMove(), _computerPlayer);
     }
 
     private void PerformNormalComputerMove()

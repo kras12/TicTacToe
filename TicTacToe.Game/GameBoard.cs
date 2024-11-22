@@ -12,10 +12,10 @@ public class GameBoard : INotifyPropertyChanged
 
     public GameBoard(int numCellsPerDirection)
     {
-        ResetBoard();
-
         // Must have the same value
         _columnCount = _rowCount = _checksToWin = numCellsPerDirection;
+
+        ResetBoard();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -41,6 +41,24 @@ public class GameBoard : INotifyPropertyChanged
     public void CheckCell(GameBoardCell cell, Player player)
     {
         Cells[cell.RowIndex][cell.ColumnIndex].AddCheck(player);
+    }
+
+    public GameBoard CreateCopy()
+    {
+        GameBoard result = new GameBoard(_checksToWin);
+        
+        for (int i = 0; i < _rowCount; i++)
+        {
+            for (int j = 0; j < _columnCount; j++)
+            {
+                if (_cells[i][j].IsChecked)
+                {
+                    result.Cells[i][j].AddCheck(_cells[i][j].CheckedByPlayer!);
+                }
+            }
+        }
+
+        return result;
     }
 
     public List<GameBoardCell> GetUncheckedCells()

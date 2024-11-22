@@ -8,6 +8,7 @@ namespace TicTacToe.ViewModels;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
     private Difficulty? _selectedDifficulty;
+    private bool hasStartedGames;
 
     public MainWindowViewModel()
     {
@@ -49,6 +50,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
             case nameof(GameHandler.Difficulty):
                 OnPropertyChanged(nameof(CurrentDifficulty));
                 break;
+
+            case nameof(GameHandler.IsHumanPlayerTurn):
+                OnPropertyChanged(nameof(IsHumanPlayerTurn));
+                break;
         }
     }
 
@@ -81,37 +86,25 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public RelayCommand NewGameCommand { get; }
 
-    public List<GameBoardCell> BoardCells
+    public List<GameBoardCell> BoardCells => GameHandler.BoardCells.SelectMany(x => x.Select(y => y)).ToList();    
+
+    public int ColumnCount => GameHandler.ColumnCount;
+
+    public GameStatistics GameStatistics => IsInDesignMode() ? GetDesignTimeGameStatistics() : GameHandler.GameStatistics;
+
+    public bool IsHumanPlayerTurn => GameHandler.IsHumanPlayerTurn;
+
+    public bool HasStartedGames
     {
         get
         {
-            return GameHandler.BoardCells.SelectMany(x => x.Select(y => y)).ToList();
+            return IsInDesignMode() ? true : hasStartedGames;
         }
-    }
 
-    public int ColumnCount
+        private set
     {
-        get
-        {
-            return GameHandler.ColumnCount;
-        }
-    }
-
-    public GameStatistics GameStatistics
-    {
-        get
-        {
-            if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
-            {
-                var designData = new GameStatistics();
-                designData.RegisterWin();
-                designData.RegisterWin();
-                designData.RegisterLoss();
-                designData.RegisterTie();
-                return designData;
-            }
-
-            return GameHandler.GameStatistics;
+            hasStartedGames = value;
+            OnPropertyChanged(nameof(HasStartedGames));
         }
     }
 
@@ -161,7 +154,23 @@ public class MainWindowViewModel : INotifyPropertyChanged
         return GameHandler.CanPerformHumanPlayerMove(cell);
     }
 
-    private void OnCellClick(GameBoardCell cell)
+    private GameStatistics GetDesignTimeGameStatistics()
+    {
+        var designData = new GameStatistics();
+        designData.RegisterWin();
+        designData.RegisterWin();
+        designData.RegisterLoss();
+        designData.RegisterTie();
+
+        return designData;
+    }
+
+    private bool IsInDesignMode()
+    {
+        return DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject());
+    }
+
+    private async void OnCellClick(GameBoardCell cell)
     {
         GameHandler.PerformHumanPlayerMove(cell);
     }
@@ -171,6 +180,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         if (SelectedDifficulty != null)
         {
             GameHandler.NewGame(SelectedDifficulty.Value);
+            HasStartedGames = true;
         }
     }
 

@@ -385,7 +385,7 @@ public class GameHandler : INotifyPropertyChanged
                 throw new NotSupportedException($"The difficulty type '{Difficulty}' is not supported.");
         }
 
-        if (_board.TryGetWinner(out var winningPlayer))
+        if (_board.TryGetWinner(out var winningPlayer) || _board.IsAllCellsChecked())
         {
             EndGame(winningPlayer);
             return;

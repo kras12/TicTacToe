@@ -4,13 +4,13 @@ using System.Windows;
 
 namespace TicTacToe.Converters
 {
-    public class InverseBooleanToVisibilityConverter : IValueConverter 
+    public class InverseBooleanToVisibilityHiddenConverter : IValueConverter 
     { 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
         { 
             if (value is bool booleanValue)
             { 
-                return booleanValue ? Visibility.Collapsed : Visibility.Visible; 
+                return booleanValue ? Visibility.Hidden : Visibility.Visible; 
             } 
 
             return Visibility.Visible;
@@ -20,7 +20,7 @@ namespace TicTacToe.Converters
         { 
             if (value is Visibility visibility) 
             {
-                return visibility == Visibility.Collapsed;
+                return visibility == Visibility.Hidden;
             } 
 
             return false;

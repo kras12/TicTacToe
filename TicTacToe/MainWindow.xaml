@@ -22,7 +22,8 @@
         <!-- Converters -->
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
+        <converters:InverseBooleanToVisibilityHiddenConverter x:Key="InverseBooleanToVisibilityHiddenConverter" />
 
         <!-- Styles -->
         <Style TargetType="TextBlock">
@@ -157,7 +158,7 @@
             
              <!-- Game actions -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,10,0,15" Visibility="{Binding IsGameActive, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,10,0,15" Visibility="{Binding IsGameActive, Converter={StaticResource InverseBooleanToVisibilityHiddenConverter}}">
                     <Label Content="Difficulty:" Foreground="AntiqueWhite"/>
                     <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" Width="90" Foreground="Black" Style="{StaticResource ComboBoxStyle}" 
                               ItemsSource="{Binding Difficulties}" SelectedValue="{Binding SelectedDifficulty, Mode=TwoWay}"/>

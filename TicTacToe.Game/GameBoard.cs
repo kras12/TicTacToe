@@ -15,7 +15,7 @@ public class GameBoard : INotifyPropertyChanged
         // Must have the same value
         _columnCount = _rowCount = _checksToWin = numCellsPerDirection;
 
-        ResetBoard();
+        CreateBoard();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -71,25 +71,6 @@ public class GameBoard : INotifyPropertyChanged
         return Cells.All(x => x.All(x => x.IsChecked));
     }
 
-    public void ResetBoard()
-    {
-        List<List<GameBoardCell>> newCells = [];
-
-        for (int r = 0; r < _rowCount; r++)
-        {
-            newCells.Add([]);
-
-            for (int c = 0; c < _columnCount; c++)
-            {
-                var cell = new GameBoardCell(rowIndex: r, columnIndex: c);
-                cell.PropertyChanged += Cell_PropertyChanged;
-                newCells[r].Add(cell);
-            }
-        }
-
-        Cells = newCells;
-    }
-
     public bool TryGetWinner([NotNullWhen(true)] out Player? player)
     {
         player = null;
@@ -128,6 +109,24 @@ public class GameBoard : INotifyPropertyChanged
         OnPropertyChanged(nameof(Cells));
     }
 
+    private void CreateBoard()
+    {
+        List<List<GameBoardCell>> newCells = [];
+
+        for (int r = 0; r < _rowCount; r++)
+        {
+            newCells.Add([]);
+
+            for (int c = 0; c < _columnCount; c++)
+            {
+                var cell = new GameBoardCell(rowIndex: r, columnIndex: c);
+                cell.PropertyChanged += Cell_PropertyChanged;
+                newCells[r].Add(cell);
+            }
+        }
+
+        Cells = newCells;
+    }
     private List<List<GameBoardCell>> GetColumnCells()
     {
         List<List<GameBoardCell>> result = [];

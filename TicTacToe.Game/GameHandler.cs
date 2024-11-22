@@ -7,22 +7,30 @@ namespace TicTacToe.Game;
 
 public class GameHandler : INotifyPropertyChanged
 {
-    private const int NumCellsPerDirection = 3;
+    /// <summary>
+    /// The number of cells per side.
+    /// </summary>
+    private const int DefaultGameBoardLength = 3;
+
+    /// <summary>
+    /// The number of cells per side for the nightmare difficulty setting. 
+    /// </summary>
+    private const int NightmareGameBoardLength = 4;
 
     private GameBoard _board;
     private Player _computerPlayer = new Player(name: "Computer", playerType: PlayerType.Computer);
     private int _currentGame = 0;
     private GameStatistics _gameStatistics = new GameStatistics();
     private Player _humanPlayer = new Player(name: "Human", playerType: PlayerType.Human);
-    private Player? currentPlayer;
-    private Difficulty difficulty;
-    private bool isGameActive;
-    private Player? winningPlayer;
+    private Player? _currentPlayer;
+    private Difficulty _difficulty;
+    private bool _isGameActive;
+    private Player? _winningPlayer;
+    private int _finishedComputerMoves = 0;
 
     public GameHandler()
     {
-        _board = new GameBoard(NumCellsPerDirection);
-        _board.PropertyChanged += _board_PropertyChanged;
+        Board = new GameBoard(DefaultGameBoardLength);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -31,7 +39,7 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return _board.Cells;
+            return Board.Cells;
         }
     }
 
@@ -41,7 +49,7 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return _board.ColumnCount;
+            return Board.ColumnCount;
         }
     }
 
@@ -49,12 +57,12 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return currentPlayer;
+            return _currentPlayer;
         }
 
         private set
         {
-            currentPlayer = value;
+            _currentPlayer = value;
             OnPropertyChanged(nameof(CurrentPlayer));
             OnPropertyChanged(nameof(IsHumanPlayerTurn));
         }
@@ -64,12 +72,12 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return difficulty;
+            return _difficulty;
         }
 
         private set
         {
-            difficulty = value;
+            _difficulty = value;
             OnPropertyChanged(nameof(Difficulty));
         }
     }
@@ -95,12 +103,12 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return isGameActive;
+            return _isGameActive;
         }
 
         private set
         {
-            isGameActive = value;
+            _isGameActive = value;
             OnPropertyChanged(nameof(IsGameActive));
             OnPropertyChanged(nameof(CanCreateNewGame));
             OnPropertyChanged(nameof(IsTie));
@@ -116,7 +124,7 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return _board.RowCount;
+            return Board.RowCount;
         }
     }
 
@@ -124,15 +132,42 @@ public class GameHandler : INotifyPropertyChanged
     {
         get
         {
-            return winningPlayer;
+            return _winningPlayer;
         }
 
         private set
         {
-            winningPlayer = value;
+            _winningPlayer = value;
             OnPropertyChanged(nameof(WinningPlayer));
             OnPropertyChanged(nameof(HaveWinner));
             OnPropertyChanged(nameof(IsTie));
+        }
+    }
+
+    private public GameBoard Board
+    {
+        get
+        {
+            return _board;
+        }
+
+        set
+        {
+            if (_board != null)
+            {
+                _board.PropertyChanged -= GameBoardPropertyChanged;
+            }
+
+            _board = value;
+
+            if (_board != null)
+            {
+                _board.PropertyChanged += GameBoardPropertyChanged;
+            }
+
+            OnPropertyChanged(nameof(BoardCells));
+            OnPropertyChanged(nameof(RowCount));
+            OnPropertyChanged(nameof(ColumnCount));
         }
     }
 
@@ -143,7 +178,11 @@ public class GameHandler : INotifyPropertyChanged
 
     public void NewGame(Difficulty difficulty)
     {
-        _board.ResetBoard();
+        Board = difficulty == Difficulty.Nightmare
+            ? new GameBoard(NightmareGameBoardLength)
+            : new GameBoard(DefaultGameBoardLength);
+        
+        _finishedComputerMoves = 0;
         CurrentPlayer = _humanPlayer;
         WinningPlayer = null;
         _currentGame += 1;
@@ -160,9 +199,9 @@ public class GameHandler : INotifyPropertyChanged
             throw new InvalidOperationException("The current player is not a human player");
         }
 
-        _board.CheckCell(cell, _humanPlayer);
+        Board.CheckCell(cell, _humanPlayer);
 
-        if (_board.TryGetWinner(out var winningPlayer) || _board.IsAllCellsChecked())
+        if (Board.TryGetWinner(out var winningPlayer) || Board.IsAllCellsChecked())
         {
             EndGame(winningPlayer);
             return;
@@ -177,20 +216,20 @@ public class GameHandler : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private void _board_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void GameBoardPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
-            case nameof(_board.Cells):
+            case nameof(Board.Cells):
                 OnPropertyChanged(nameof(BoardCells));
                 break;
 
-            case nameof(_board.ColumnCount):
+            case nameof(Board.ColumnCount):
                 OnPropertyChanged(nameof(ColumnCount));
                 break;
 
 
-            case nameof(_board.RowCount):
+            case nameof(Board.RowCount):
                 OnPropertyChanged(nameof(RowCount));
                 break;
         }
@@ -232,7 +271,7 @@ public class GameHandler : INotifyPropertyChanged
         ConcurrentBag<GameBoardCell> cells = [];
         List<Task> tasks = [];
 
-        foreach (var cell in _board.GetUncheckedCells())
+        foreach (var cell in Board.GetUncheckedCells())
         {
             cells.Add(cell);            
         }
@@ -245,10 +284,10 @@ public class GameHandler : INotifyPropertyChanged
             {
                 while (cells.TryTake(out var originalCell))
                 {
-                    var boardCopy = _board.CreateCopy();
+                    var boardCopy = Board.CreateCopy();
                     var cell = boardCopy.Cells.SelectMany(x => x).Single(x => x.RowIndex == originalCell.RowIndex && x.ColumnIndex == originalCell.ColumnIndex);
                     boardCopy.CheckCell(cell, _computerPlayer);
-                    int score = Minimax(boardCopy, 0, isComputer: false);
+                    int score = Minimax(boardCopy, 0, isComputer: false, alpha: int.MinValue, beta: int.MaxValue);
 
                     Debug.WriteLine($"New way - Cell: {originalCell.RowIndex},{originalCell.ColumnIndex} - {score}");
 
@@ -256,7 +295,7 @@ public class GameHandler : INotifyPropertyChanged
                     if (score > bestValue)
                     {
                         bestValue = score;
-                        bestCell = _board.Cells.SelectMany(x => x).Single(x => x.RowIndex == cell.RowIndex && x.ColumnIndex == cell.ColumnIndex);
+                        bestCell = Board.Cells.SelectMany(x => x).Single(x => x.RowIndex == cell.RowIndex && x.ColumnIndex == cell.ColumnIndex);
                     }
                     semaphore.Release();
                 }
@@ -275,7 +314,7 @@ public class GameHandler : INotifyPropertyChanged
 
     private GameBoardCell GetRandomCheckableCell()
     {
-        var candidateCells = _board.GetUncheckedCells();
+        var candidateCells = Board.GetUncheckedCells();
 
         if (candidateCells.Count == 0)
         {
@@ -286,7 +325,7 @@ public class GameHandler : INotifyPropertyChanged
         return candidateCells[random.Next(0, candidateCells.Count)];
     }
 
-    private int Minimax(GameBoard board, int depth, bool isComputer)
+    private int Minimax(GameBoard board, int depth, bool isComputer, int alpha, int beta)
     {
         if (board.TryGetWinner(out var winningPlayer))
         {
@@ -313,9 +352,15 @@ public class GameHandler : INotifyPropertyChanged
             foreach (var cell in board.GetUncheckedCells())
             {
                 board.CheckCell(cell, _computerPlayer);
-                int score = Minimax(board, depth + 1, isComputer: false);
+                int score = Minimax(board, depth + 1, isComputer: false, alpha, beta);
                 board.UncheckCell(cell);
                 maximizedValue = Math.Max(score, maximizedValue);
+                alpha = Math.Max(alpha, maximizedValue);
+
+                if (alpha >= beta)
+                {
+                    break;
+                }
             }
 
             return maximizedValue;
@@ -327,9 +372,15 @@ public class GameHandler : INotifyPropertyChanged
             foreach (var cell in board.GetUncheckedCells())
             {
                 board.CheckCell(cell, _humanPlayer);
-                int score = Minimax(board, depth + 1, isComputer: true);
+                int score = Minimax(board, depth + 1, isComputer: true, alpha, beta);
                 board.UncheckCell(cell);
                 minimizedValue = Math.Min(score, minimizedValue);
+                beta = Math.Min(beta, minimizedValue);
+
+                if (alpha >= beta)
+                {
+                    break;
+                }
             }
 
             return minimizedValue;
@@ -378,14 +429,18 @@ public class GameHandler : INotifyPropertyChanged
                 break;
 
             case Difficulty.Hard:
-                await PerformInsaneComputerMove();
+                await PerformHardComputerMove();
+                break;
+
+            case Difficulty.Nightmare:
+                await PerformNightmareComputerMove();
                 break;
 
             default:
                 throw new NotSupportedException($"The difficulty type '{Difficulty}' is not supported.");
         }
 
-        if (_board.TryGetWinner(out var winningPlayer) || _board.IsAllCellsChecked())
+        if (Board.TryGetWinner(out var winningPlayer) || Board.IsAllCellsChecked())
         {
             EndGame(winningPlayer);
             return;
@@ -394,14 +449,32 @@ public class GameHandler : INotifyPropertyChanged
         NextPlayer();
     }
 
-    private async Task PerformInsaneComputerMove()
+    private async Task PerformHardComputerMove()
     {
-        _board.CheckCell(await GetBestComputerMove(), _computerPlayer);
+        PerformComputerMove(await GetBestComputerMove());
+    }
+
+    private async Task PerformNightmareComputerMove()
+    {
+        if (_finishedComputerMoves < 2)
+        {
+            PerformNormalComputerMove();
+        }
+        else
+        {
+            PerformComputerMove(await GetBestComputerMove());
+        }
     }
 
     private void PerformNormalComputerMove()
     {
-        _board.CheckCell(GetRandomCheckableCell(), _computerPlayer);
+        PerformComputerMove(GetRandomCheckableCell());
+    }
+
+    private void PerformComputerMove(GameBoardCell cell)
+    {
+        Board.CheckCell(cell, _computerPlayer);
+        _finishedComputerMoves += 1;
     }
 
     private void ThrowIfNoActiveGame()

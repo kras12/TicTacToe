@@ -33,7 +33,7 @@
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="AntiqueWhite" />
         </Style>
-        <Style TargetType="Button" x:Key="BoardCell">
+        <Style TargetType="Button" x:Key="GameBoardCellStyle">
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="1000"/>
@@ -194,7 +194,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource BoardCell}" Margin="5" Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
+                            <Button Style="{StaticResource GameBoardCellStyle}" Margin="5" Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

@@ -7,7 +7,6 @@
     <enums:PlayerType x:Key="ComputerPlayerType">Computer</enums:PlayerType>
 
     <!-- Converters -->
-    <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter"/>
     <converters:InverseBooleanToVisibilityHiddenConverter x:Key="InverseBooleanToVisibilityHiddenConverter"/>

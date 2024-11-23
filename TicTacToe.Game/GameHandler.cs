@@ -17,7 +17,7 @@ public class GameHandler : INotifyPropertyChanged
     /// </summary>
     private const int NightmareGameBoardLength = 4;
 
-    private GameBoard _board;
+    private GameBoard _board = default!;
     private Player _computerPlayer = new Player(name: "Computer", playerType: PlayerType.Computer);
     private int _currentGame = 0;
     private GameStatistics _gameStatistics = new GameStatistics();

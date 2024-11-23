@@ -41,6 +41,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
             case nameof(GameHandler.IsGameActive):
                 OnPropertyChanged(nameof(StatusMessage));
                 OnPropertyChanged(nameof(IsGameActive));
+                OnPropertyChanged(nameof(IsHumanPlayerTurn));
                 break;
 
             case nameof(GameHandler.GameStatistics):
@@ -51,11 +52,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
                 OnPropertyChanged(nameof(CurrentDifficulty));
                 break;
 
-            case nameof(GameHandler.IsHumanPlayerTurn):
-                OnPropertyChanged(nameof(IsHumanPlayerTurn));
-                break;
-
             case nameof(GameHandler.CurrentPlayer):
+                OnPropertyChanged(nameof(IsHumanPlayerTurn));
                 OnPropertyChanged(nameof(StatusMessage));
                 break;
         }
@@ -96,7 +94,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public GameStatistics GameStatistics => IsInDesignMode() ? GetDesignTimeGameStatistics() : GameHandler.GameStatistics;
 
-    public bool IsHumanPlayerTurn => GameHandler.IsHumanPlayerTurn;
+    public bool IsHumanPlayerTurn => GameHandler.IsGameActive && GameHandler.CurrentPlayer?.PlayerType == PlayerType.Human;
 
     public bool HasStartedGames
     {

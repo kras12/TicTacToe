@@ -64,7 +64,6 @@ public class GameHandler : INotifyPropertyChanged
         {
             _currentPlayer = value;
             OnPropertyChanged(nameof(CurrentPlayer));
-            OnPropertyChanged(nameof(IsHumanPlayerTurn));
         }
     }
 
@@ -112,11 +111,8 @@ public class GameHandler : INotifyPropertyChanged
             OnPropertyChanged(nameof(IsGameActive));
             OnPropertyChanged(nameof(CanCreateNewGame));
             OnPropertyChanged(nameof(IsTie));
-            OnPropertyChanged(nameof(IsHumanPlayerTurn));
         }
     }
-
-    public bool IsHumanPlayerTurn => IsGameActive && CurrentPlayer?.PlayerType == PlayerType.Human;
 
     public bool IsTie => !IsGameActive && _currentGame > 0 && !HaveWinner;
 

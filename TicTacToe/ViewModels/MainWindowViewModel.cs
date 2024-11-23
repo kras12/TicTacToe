@@ -54,6 +54,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
             case nameof(GameHandler.IsHumanPlayerTurn):
                 OnPropertyChanged(nameof(IsHumanPlayerTurn));
                 break;
+
+            case nameof(GameHandler.CurrentPlayer):
+                OnPropertyChanged(nameof(StatusMessage));
+                break;
         }
     }
 
@@ -120,11 +124,11 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         get
         {
-            if (GameHandler.IsGameActive && GameHandler.CurrentPlayer?.PlayerType == PlayerType.Human)
+            if (GameHandler.IsGameActive)
             {
-                return "Your turn!";
+                return GameHandler.CurrentPlayer?.PlayerType == PlayerType.Human ? "Your turn!" : "Computer's turn!";
             }
-            else if (!GameHandler.IsGameActive)
+            else
             {
                 if (GameHandler.IsTie)
                 {

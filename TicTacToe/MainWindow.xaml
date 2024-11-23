@@ -30,43 +30,43 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="AntiqueWhite" />
         </Style>
+        
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="AntiqueWhite" />
         </Style>
+        
         <Style TargetType="Button" x:Key="GameBoardCellStyle">
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="1000"/>
                 </Style>
+                <RadialGradientBrush x:Key="BackgroundBrush">
+                    <GradientStop Color="#FFA2B7D2" Offset="0.0" />
+                    <GradientStop Color="#FF7B8BA0" Offset="0.2" />
+                    <GradientStop Color="#FF5F6C7C" Offset="0.4" />
+                    <GradientStop Color="#FF4D5A6A" Offset="0.6" />
+                    <GradientStop Color="#FF3B4858" Offset="0.8" />
+                    <GradientStop Color="#FF3B4858" Offset="0.98" />
+                    <GradientStop Color="AntiqueWhite" Offset="1.0" />
+                </RadialGradientBrush>
             </Style.Resources>
             <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="BorderBrush" Value="#CC9C9C9C"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background">
-                <Setter.Value>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#FFA2B7D2" Offset="0.0" />
-                        <GradientStop Color="#FF7B8BA0" Offset="0.2" />
-                        <GradientStop Color="#FF5F6C7C" Offset="0.4" />
-                        <GradientStop Color="#FF4D5A6A" Offset="0.6" />
-                        <GradientStop Color="#FF3B4858" Offset="0.8" />
-                        <GradientStop Color="#FF3B4858" Offset="0.98" />
-                        <GradientStop Color="AntiqueWhite" Offset="1.0" />
-                    </RadialGradientBrush>
-                </Setter.Value>
-            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                        <Border Background="{StaticResource BackgroundBrush}" BorderBrush="#CC9C9C9C" BorderThickness="1">
                             <Grid>
                                 <TextBlock x:Name="MarkTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                    FontSize="60" Foreground="White" Opacity="0.3"/>
-                                <TextBlock x:Name="ContentTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                    Text="{TemplateBinding Content}" Foreground="White" FontWeight="Bold" Padding="5"
-                                    FontSize="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Button}, Converter={StaticResource HeightToFontSizeConverter}, ConverterParameter=0.15}"/>
-                                <Border x:Name="HoverOverlay" Background="Transparent" Visibility="Collapsed" Opacity="0.3" />
-                                <Border x:Name="PlayerOverlay" Visibility="Collapsed" Opacity="0.3" />
+                                    FontSize="60" Foreground="AntiqueWhite" Opacity="0.5"/>
+                                <Border x:Name="ContentTextBlockBorder" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#99000000"
+                                         CornerRadius="10" Padding="6,3,5,3" BorderBrush="Black" BorderThickness="1" Visibility="Visible" Opacity="0">
+                                    <TextBlock x:Name="ContentTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Foreground="White" FontWeight="Bold" Background="Transparent" 
+                                        Opacity="0.6" Visibility="{Binding Path=Visibility, ElementName=ContentTextBlockBorder}" 
+                                        FontSize="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Button}, Converter={StaticResource HeightToFontSizeConverter}, ConverterParameter=0.15}"/>
+                                </Border>
+                                <Border x:Name="HoverOverlay" Background="Transparent" Visibility="Collapsed" Opacity="0.3"/>
+                                <Border x:Name="PlayerOverlay" Visibility="Collapsed" Opacity="0.3"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -76,8 +76,8 @@
                                 </Setter>
                             </Trigger>
                             <DataTrigger Binding="{Binding IsChecked}" Value="True">
-                                <Setter Property="Content" Value="{Binding CheckedByPlayer.Name}" />                                
-                                <Setter TargetName="ContentTextBlock" Property="Background" Value="#99000000" />
+                                <Setter TargetName="ContentTextBlock" Property="Text" Value="{Binding CheckedByPlayer.Name}"/>
+                                <Setter TargetName="ContentTextBlockBorder" Property="Opacity" Value="1" />                                
                                 <Setter TargetName="PlayerOverlay" Property="Visibility" Value="Visible" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding CheckedByPlayer.PlayerType}" Value="{StaticResource HumanPlayerType}">
@@ -93,20 +93,18 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Style TargetType="Button" x:Key="GameControlButton">
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="5"/>
                 </Style>
             </Style.Resources>
-            <Setter Property="Padding" Value="10,5,10,5"/>
-            <Setter Property="Background" Value="LightGray"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" 
-                                CornerRadius="5" Padding="{TemplateBinding Padding}">
+                        <Border Background="LightGray" BorderThickness="1" CornerRadius="5" Padding="10,5,10,5">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -118,11 +116,9 @@
                     <Setter Property="BorderBrush" Value="{StaticResource Button.MouseOver.Border}"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
+        </Style>        
+        
         <Style TargetType="ComboBox" x:Key="ComboBoxStyle">
-            <Setter Property="Background" Value="LightGray"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="Foreground" Value="Black"/>
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>

@@ -185,7 +185,7 @@
         <!--Game Board-->
         <Border x:Name="BoardBorder" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 BorderBrush="AntiqueWhite" BorderThickness="2" Background="Black" Padding="5">
-            <Grid x:Name="BoardGrid" IsEnabled="{Binding IsHumanPlayerTurn}" Visibility="{Binding HasStartedGame, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid x:Name="BoardGrid" IsEnabled="{Binding IsHumanPlayerTurn}" Visibility="{Binding HasStartedGames, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ItemsControl ItemsSource="{Binding BoardCells}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

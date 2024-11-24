@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Graphics\tic-tac-toe.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Graphics\tic-tac-toe.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TicTacToe.Game\TicTacToe.Game.csproj" />

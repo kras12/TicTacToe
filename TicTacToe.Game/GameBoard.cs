@@ -6,7 +6,7 @@ namespace TicTacToe.Game;
 /// <summary>
 /// Represents a game board in a Tic Tac Toe game. 
 /// </summary>
-public class GameBoard : INotifyPropertyChanged
+internal class GameBoard : INotifyPropertyChanged
 {
     #region Fields
 

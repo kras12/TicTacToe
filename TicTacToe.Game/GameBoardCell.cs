@@ -67,6 +67,8 @@ public class GameBoardCell : ObservableObjectBase
 
     #endregion
 
+    #region Methods    
+
     /// <summary>
     /// Checks the cell.
     /// </summary>
@@ -89,4 +91,6 @@ public class GameBoardCell : ObservableObjectBase
     {
         CheckedByPlayer = null;
     }
+
+    #endregion
 }

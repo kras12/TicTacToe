@@ -2,13 +2,14 @@
 using TicTacToe.Commands;
 using TicTacToe.Game.Enums;
 using TicTacToe.Game;
+using TicTacToe.Shared;
 
 namespace TicTacToe.ViewModels;
 
 /// <summary>
 /// View model class for the main window. 
 /// </summary>
-public class MainWindowViewModel : INotifyPropertyChanged
+public class MainWindowViewModel : ObservableObjectBase
 {
     #region Fields
 
@@ -44,13 +45,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         Difficulties = Enum.GetValues<Difficulty>().ToList();
         SelectedDifficulty = Difficulties.FirstOrDefault();
     }
-
-    #endregion
-
-    #region Events
-
-    /// <inheritdoc/>
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     #endregion
 
@@ -108,7 +102,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         private set
         {
             _hasStartedGames = value;
-            NotifyPropertyChanged(nameof(HasStartedGames));
+            RaisePropertyChanged(nameof(HasStartedGames));
         }
     }
 
@@ -146,7 +140,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         set
         {
             _selectedDifficulty = value;
-            NotifyPropertyChanged(nameof(SelectedDifficulty));
+            RaisePropertyChanged(nameof(SelectedDifficulty));
         }
     }
 
@@ -184,15 +178,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Method to raise the PropertyChanged event.
-    /// </summary>
-    /// <param name="propertyName">The name of the property that changed.</param>
-    protected void NotifyPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 
     /// <summary>
     /// Checks if a new game can be created. 
@@ -250,34 +235,34 @@ public class MainWindowViewModel : INotifyPropertyChanged
         switch (e.PropertyName)
         {
             case nameof(_gameHandler.BoardCells):
-                NotifyPropertyChanged(nameof(BoardCells));
+                RaisePropertyChanged(nameof(BoardCells));
                 break;
 
             case nameof(_gameHandler.ColumnCount):
-                NotifyPropertyChanged(nameof(ColumnCount));
+                RaisePropertyChanged(nameof(ColumnCount));
                 break;
 
             case nameof(_gameHandler.RowCount):
-                NotifyPropertyChanged(nameof(RowCount));
+                RaisePropertyChanged(nameof(RowCount));
                 break;
 
             case nameof(_gameHandler.IsGameActive):
-                NotifyPropertyChanged(nameof(StatusMessage));
-                NotifyPropertyChanged(nameof(IsGameActive));
-                NotifyPropertyChanged(nameof(IsHumanPlayerTurn));
+                RaisePropertyChanged(nameof(StatusMessage));
+                RaisePropertyChanged(nameof(IsGameActive));
+                RaisePropertyChanged(nameof(IsHumanPlayerTurn));
                 break;
 
             case nameof(_gameHandler.GameStatistics):
-                NotifyPropertyChanged(nameof(GameStatistics));
+                RaisePropertyChanged(nameof(GameStatistics));
                 break;
 
             case nameof(_gameHandler.Difficulty):
-                NotifyPropertyChanged(nameof(CurrentDifficulty));
+                RaisePropertyChanged(nameof(CurrentDifficulty));
                 break;
 
             case nameof(_gameHandler.CurrentPlayer):
-                NotifyPropertyChanged(nameof(IsHumanPlayerTurn));
-                NotifyPropertyChanged(nameof(StatusMessage));
+                RaisePropertyChanged(nameof(IsHumanPlayerTurn));
+                RaisePropertyChanged(nameof(StatusMessage));
                 break;
         }
     }

@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using TicTacToe.Shared;
 
 namespace TicTacToe.Game
 {
     /// <summary>
     /// Represents statistics for a Tic Tac Toe game. 
     /// </summary>
-    public class GameStatistics : INotifyPropertyChanged
+    public class GameStatistics : ObservableObjectBase
     {
         #region Fields
 
@@ -51,13 +51,6 @@ namespace TicTacToe.Game
 
         #endregion
 
-        #region Events
-
-        /// <inheritdoc/>
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        #endregion
-
         #region Properties       
 
         /// <summary>
@@ -73,7 +66,7 @@ namespace TicTacToe.Game
             private set
             {
                 _losses = value;
-                NotifyPropertyChanged(nameof(Losses));
+                RaisePropertyChanged(nameof(Losses));
             }
         }
 
@@ -90,7 +83,7 @@ namespace TicTacToe.Game
             private set
             {
                 _ties = value;
-                NotifyPropertyChanged(nameof(Ties));
+                RaisePropertyChanged(nameof(Ties));
             }
         }
 
@@ -107,7 +100,7 @@ namespace TicTacToe.Game
             private set
             {
                 _wins = value;
-                NotifyPropertyChanged(nameof(Wins));
+                RaisePropertyChanged(nameof(Wins));
             }
         }
 
@@ -133,15 +126,6 @@ namespace TicTacToe.Game
         internal void RegisterWin()
         {
             Wins += 1;
-        }
-
-        /// <summary>
-        /// Method to raise the PropertyChanged event.
-        /// </summary>
-        /// <param name="propertyName">The name of the property that changed.</param>
-        protected void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

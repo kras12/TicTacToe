@@ -1,14 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Diagnostics;
 using TicTacToe.Game.Enums;
+using TicTacToe.Shared;
 
 namespace TicTacToe.Game;
 
 /// <summary>
 /// Represents a Tic Tac Toe game.
 /// </summary>
-public class GameHandler : INotifyPropertyChanged
+public class GameHandler : ObservableObjectBase
 {
     #region Constants
 
@@ -86,13 +86,6 @@ public class GameHandler : INotifyPropertyChanged
 
     #endregion
 
-    #region Events
-
-    /// <inheritdoc/>
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    #endregion
-
     #region Properties
 
     /// <summary>
@@ -135,7 +128,7 @@ public class GameHandler : INotifyPropertyChanged
         private set
         {
             _currentPlayer = value;
-            NotifyPropertyChanged(nameof(CurrentPlayer));
+            RaisePropertyChanged(nameof(CurrentPlayer));
         }
     }
 
@@ -152,7 +145,7 @@ public class GameHandler : INotifyPropertyChanged
         private set
         {
             _difficulty = value;
-            NotifyPropertyChanged(nameof(Difficulty));
+            RaisePropertyChanged(nameof(Difficulty));
         }
     }
 
@@ -170,7 +163,7 @@ public class GameHandler : INotifyPropertyChanged
         {
             _gameStatistics = value;
             _gameStatistics.PropertyChanged += OnGameStatisticsPropertyChanged;
-            NotifyPropertyChanged(nameof(GameStatistics));
+            RaisePropertyChanged(nameof(GameStatistics));
         }
     }
 
@@ -192,9 +185,9 @@ public class GameHandler : INotifyPropertyChanged
         private set
         {
             _isGameActive = value;
-            NotifyPropertyChanged(nameof(IsGameActive));
-            NotifyPropertyChanged(nameof(CanCreateNewGame));
-            NotifyPropertyChanged(nameof(IsTie));
+            RaisePropertyChanged(nameof(IsGameActive));
+            RaisePropertyChanged(nameof(CanCreateNewGame));
+            RaisePropertyChanged(nameof(IsTie));
         }
     }
 
@@ -227,9 +220,9 @@ public class GameHandler : INotifyPropertyChanged
         private set
         {
             _winningPlayer = value;
-            NotifyPropertyChanged(nameof(WinningPlayer));
-            NotifyPropertyChanged(nameof(HaveWinner));
-            NotifyPropertyChanged(nameof(IsTie));   
+            RaisePropertyChanged(nameof(WinningPlayer));
+            RaisePropertyChanged(nameof(HaveWinner));
+            RaisePropertyChanged(nameof(IsTie));   
         }
     }
 
@@ -257,9 +250,9 @@ public class GameHandler : INotifyPropertyChanged
                 _board.PropertyChanged += OnGameBoardPropertyChanged;
             }
 
-            NotifyPropertyChanged(nameof(BoardCells));
-            NotifyPropertyChanged(nameof(RowCount));
-            NotifyPropertyChanged(nameof(ColumnCount));
+            RaisePropertyChanged(nameof(BoardCells));
+            RaisePropertyChanged(nameof(RowCount));
+            RaisePropertyChanged(nameof(ColumnCount));
         }
     }
 
@@ -330,15 +323,6 @@ public class GameHandler : INotifyPropertyChanged
 
         NextPlayer();
         await PerformComputerMove();
-    }
-
-    /// <summary>
-    /// Method to raise the PropertyChanged event.
-    /// </summary>
-    /// <param name="propertyName">The name of the property that changed.</param>
-    protected void NotifyPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>
@@ -538,16 +522,16 @@ public class GameHandler : INotifyPropertyChanged
         switch (e.PropertyName)
         {
             case nameof(Board.Cells):
-                NotifyPropertyChanged(nameof(BoardCells));
+                RaisePropertyChanged(nameof(BoardCells));
                 break;
 
             case nameof(Board.ColumnCount):
-                NotifyPropertyChanged(nameof(ColumnCount));
+                RaisePropertyChanged(nameof(ColumnCount));
                 break;
 
 
             case nameof(Board.RowCount):
-                NotifyPropertyChanged(nameof(RowCount));
+                RaisePropertyChanged(nameof(RowCount));
                 break;
         }
     }
@@ -559,7 +543,7 @@ public class GameHandler : INotifyPropertyChanged
     /// <param name="e">Event argument.</param>
     private void OnGameStatisticsPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        NotifyPropertyChanged(nameof(GameStatistics));
+        RaisePropertyChanged(nameof(GameStatistics));
     }
 
     /// <summary>

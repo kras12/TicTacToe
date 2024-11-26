@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
+﻿using TicTacToe.Shared;
 
 namespace TicTacToe.Game;
 
 /// <summary>
 /// A class that represents game board cells in a Tic Tac Toe Game.
 /// </summary>
-public class GameBoardCell : INotifyPropertyChanged
+public class GameBoardCell : ObservableObjectBase
 {
     #region Fields
 
@@ -31,13 +31,6 @@ public class GameBoardCell : INotifyPropertyChanged
 
     #endregion
 
-    #region Events
-
-    /// <inheritdoc/>
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    #endregion
-
     #region Properties
 
     /// <summary>
@@ -53,7 +46,7 @@ public class GameBoardCell : INotifyPropertyChanged
         private set
         {
             _checkedByPlayer = value;
-            NotifyPropertyChanged(nameof(CheckedByPlayer));
+            RaisePropertyChanged(nameof(CheckedByPlayer));
         }
     }
 
@@ -95,14 +88,5 @@ public class GameBoardCell : INotifyPropertyChanged
     public void RemoveCheck()
     {
         CheckedByPlayer = null;
-    }
-
-    /// <summary>
-    /// Method to raise the PropertyChanged event.
-    /// </summary>
-    /// <param name="propertyName">The name of the property that changed.</param>
-    protected void NotifyPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
     }
 }

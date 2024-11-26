@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicTacToe.Game\TicTacToe.Game.csproj" />
+    <ProjectReference Include="..\TicTacToe.Shared\TicTacToe.Shared.csproj" />
   </ItemGroup>
 
 </Project>

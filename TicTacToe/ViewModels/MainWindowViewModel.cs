@@ -36,7 +36,7 @@ public class MainWindowViewModel : ObservableObjectBase
     /// </summary>
     public MainWindowViewModel()
     {
-        CellClickCommand = new GenericRelayCommand<GameBoardCell>(PerformHumanPlayerMove, CanHumanPlayerPerformMove);
+        CellClickCommand = new GenericRelayCommand<GameBoardCellViewModel>(PerformHumanPlayerMove, CanHumanPlayerPerformMove);
         NewGameCommand = new RelayCommand(CreateNewGame, CanCreateNewGame);
 
         _gameHandler = new GameHandler();
@@ -53,7 +53,7 @@ public class MainWindowViewModel : ObservableObjectBase
     /// <summary>
     /// The command to handle clicks on game board cells.
     /// </summary>
-    public GenericRelayCommand<GameBoardCell> CellClickCommand { get; }
+    public GenericRelayCommand<GameBoardCellViewModel> CellClickCommand { get; }
 
     /// <summary>
     /// The command to start new games. 
@@ -67,7 +67,7 @@ public class MainWindowViewModel : ObservableObjectBase
     /// <summary>
     /// A flattened list of all game board cells. 
     /// </summary>
-    public List<GameBoardCell> BoardCells => _gameHandler.BoardCells.SelectMany(x => x.Select(y => y)).ToList();
+    public List<GameBoardCellViewModel> BoardCells => _gameHandler.BoardCells.SelectMany(x => x.Select(y => new GameBoardCellViewModel(y))).ToList();
     
     /// <summary>
     /// The number of columns in the game board.
@@ -119,13 +119,7 @@ public class MainWindowViewModel : ObservableObjectBase
     /// <summary>
     /// The number of rows in the game board. 
     /// </summary>
-    public int RowCount
-    {
-        get
-        {
-            return _gameHandler.RowCount;
-        }
-    }
+    public int RowCount => _gameHandler.RowCount;
 
     /// <summary>
     /// The selected difficulity when starting a new game. 
@@ -193,9 +187,9 @@ public class MainWindowViewModel : ObservableObjectBase
     /// </summary>
     /// <param name="cell"></param>
     /// <returns>True if the player can click on a cell.</returns>
-    private bool CanHumanPlayerPerformMove(GameBoardCell cell)
+    private bool CanHumanPlayerPerformMove(GameBoardCellViewModel cell)
     {
-        return _gameHandler.CanPerformHumanPlayerMove(cell);
+        return _gameHandler.CanPerformHumanPlayerMove(cell.GetUnderlyingCell());
     }
 
     private void CreateNewGame()
@@ -271,9 +265,9 @@ public class MainWindowViewModel : ObservableObjectBase
     /// Performs a human player move. 
     /// </summary>
     /// <param name="cell"></param>
-    private async void PerformHumanPlayerMove(GameBoardCell cell)
+    private async void PerformHumanPlayerMove(GameBoardCellViewModel cell)
     {
-        await _gameHandler.PerformHumanPlayerMove(cell);
+        await _gameHandler.PerformHumanPlayerMove(cell.GetUnderlyingCell());
     }
 
     #endregion
